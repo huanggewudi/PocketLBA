@@ -20,6 +20,7 @@ import re
 from prody import *
 import networkx as nx
 import numpy as np
+from rdkit import Chem
 
 seed = 1
 torch.manual_seed(seed)
@@ -104,17 +105,24 @@ def get_complex_edge_fea(edge_list, coord_list):
     return edges_fea
 
 
-def read_ligand(filepath):
+def read_ligand(filepath, ligand_lm):
     featurizer = Featurizer(save_molecule_codes=False)
     ligand = next(pybel.readfile("mol2", filepath))
     ligand_coord, atom_fea, h_num = featurizer.get_features(ligand)
 
-    return ligand_coord, atom_fea, ligand, h_num
+    mol = Chem.MolFromMol2File(filepath)
+    smiles = Chem.MolToSmiles(mol)
+
+    embedding = ligand_lm(smiles)
+    ligand_seq_emb = torch.tensor(embedding[0])
+
+    return ligand_coord, atom_fea, ligand, h_num, ligand_seq_emb
 
 
 def read_protein(filepath, prot_lm):
     featurizer = Featurizer(save_molecule_codes=False)
     protein_pocket = next(pybel.readfile("pdb", filepath))
+    # 蛋白质的坐标（pocket_coord）、原子特征（atom_fea）以及氢键数量（h_num）
     pocket_coord, atom_fea, h_num = featurizer.get_features(protein_pocket)
 
     aa_codes = {
@@ -125,7 +133,8 @@ def read_protein(filepath, prot_lm):
         'THR': 'T', 'VAL': 'V', 'TYR': 'Y', 'TRP': 'W'}
 
     seq = ''
-    protein_filepath = filepath
+    # protein_filepath = filepath
+    protein_filepath = filepath.replace('pocket', '')
     for line in open(protein_filepath):
         if line[0:6] == "SEQRES":
             columns = line.split()
@@ -135,21 +144,21 @@ def read_protein(filepath, prot_lm):
     sequences_Example = re.sub(r"[UZOB]", "X", seq)
 
     embedding = prot_lm(sequences_Example)
-    e1 = torch.tensor(embedding[0])
-    pro_seq_emb = torch.mean(e1, dim=0)
+    pro_seq_emb = torch.tensor(embedding[0])
+    # pro_seq_emb = torch.mean(e1, dim=0)
 
     return pocket_coord, atom_fea, protein_pocket, h_num, pro_seq_emb
 
 
-def Mult_graph(lig_file_name, pocket_file_name, id, score, prot_lm):
-    lig_coord, lig_atom_fea, mol, h_num_lig = read_ligand(lig_file_name)
-    pocket_coord, pocket_atom_fea, protein, h_num_pro, pro_seq = read_protein(pocket_file_name, prot_lm)  # ,pro_seq
+def mult_graph(lig_file_name, pocket_file_name, id, score, prot_lm, ligand_lm):
+    lig_coord, lig_atom_fea, mol, h_num_lig, ligand_seq_emb = read_ligand(lig_file_name, ligand_lm)
+    pocket_coord, pocket_atom_fea, protein, h_num_pro, pro_seq_emb = read_protein(pocket_file_name, prot_lm)  # ,pro_seq
 
-    if (mol != None) and (protein != None):
+    if (mol is not None) and (protein is not None):
         G_l = Ligand_graph(lig_atom_fea, mol, h_num_lig, score)
         G_p = protein_graph(pocket_atom_fea, protein, h_num_pro, score)
         G_inter = Inter_graph(lig_coord, pocket_coord, lig_atom_fea, pocket_atom_fea, score)
-        G_list = [G_l, G_p, G_inter, pro_seq, id]
+        G_list = [G_l, G_p, G_inter, pro_seq_emb, id, ligand_seq_emb]
         return G_list
     else:
         return None
@@ -351,14 +360,17 @@ def GetPDBDict(Path):
 
 def process_raw_data(dataset_path, processed_file, set_list):
     res = GetPDBDict(Path='/mnt/disk/hzy/pyg/datasets/raw/pdbbind/metadata/index/INDEX_general_PL_data.2019')
-    # set_list = [x for x in os.listdir(dataset_path) if len(x) == 4]
 
     G_list = []
 
-    tokenizer = AutoTokenizer.from_pretrained("/mnt/disk/hzy/pyg/plms/prot_bert", do_lower_case=False)
-    model = AutoModel.from_pretrained("/mnt/disk/hzy/pyg/plms/prot_bert")
-
+    tokenizer = AutoTokenizer.from_pretrained("/mnt/disk/hzy/pyg/plms/esm2_3b", do_lower_case=False)
+    model = AutoModel.from_pretrained("/mnt/disk/hzy/pyg/plms/esm2_3b")
     prot_lm = pipeline('feature-extraction', model=model, tokenizer=tokenizer, device=0)
+
+    # todo 添加小分子语言模型
+    ligand_tokenizer = AutoTokenizer.from_pretrained("", do_lower_case=False)
+    ligand_model = AutoModel.from_pretrained("")
+    ligand_lm = pipeline('feature-extraction', model=ligand_model, tokenizer=ligand_tokenizer, device=0)
 
     for item in tqdm(set_list):
         score = res[item]
@@ -366,7 +378,7 @@ def process_raw_data(dataset_path, processed_file, set_list):
         pocket_file_name = dataset_path + item + '/' + item + '_pocket.pdb'
 
         try:
-            G = Mult_graph(lig_file_name, pocket_file_name, item, score, prot_lm)
+            G = mult_graph(lig_file_name, pocket_file_name, item, score, prot_lm, ligand_lm)
             if G is not None:
                 G_list.append(G)
         except Exception as e:
@@ -407,9 +419,9 @@ if __name__ == '__main__':
 
     raw_data_path = '/mnt/disk/hzy/pyg/datasets/raw/pdbbind/pdb_files/'
 
-    data_path_train = f'../data_prottrans/{split}/train.pkl'
-    data_path_valid = f'../data_prottrans/{split}/valid.pkl'
-    data_path_test = f'../data_prottrans/{split}/test.pkl'
+    data_path_train = f'../data/{split}/train.pkl'
+    data_path_valid = f'../data/{split}/valid.pkl'
+    data_path_test = f'../data/{split}/test.pkl'
 
     # 如果目录不存在，则创建目录
     data_dir = os.path.dirname(data_path_train)
