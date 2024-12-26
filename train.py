@@ -88,30 +88,30 @@ class BIPLnet(torch.nn.Module):
     def __init__(self, metadata):
         super().__init__()
         self.heterognn = HeteroGNN(metadata, edge_dim=10, hidden_channels=64, out_channels=8, num_layers=3)
-        self.ligandgnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=8, edge_dim=12, num_timesteps=3,
+        self.ligandgnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=16, edge_dim=12, num_timesteps=3,
                                      num_layers=3)
-        self.proteingnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=8, edge_dim=12, num_timesteps=3,
+        self.proteingnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=16, edge_dim=12, num_timesteps=3,
                                       num_layers=3)
-        self.protein_seq_mpl = MLP(channel_list=[1024, 512, 8], dropout=0.1)
-        self.out = MLP(channel_list=[56, 32, 1], dropout=0.1)
+        self.protein_seq_mlp = MLP(channel_list=[1024, 512, 16], dropout=0.1)
+        # todo 确定输入维度
+        self.ligand_seq_mlp = MLP(channel_list=[1024, 512, 16], dropout=0.1)
+        self.out_mlp = MLP(channel_list=[None, 64, 32, 1], dropout=0.1)
 
     def forward(self, data):
         g_l = data[0]
         g_p = data[1]
         g_pl = data[2]
         pro_seq = data[3]
+        ligand_seq = data[4]
 
         l = self.ligandgnn(x=g_l.x, edge_index=g_l.edge_index, edge_attr=g_l.edge_attr, batch=g_l.batch)
         p = self.proteingnn(x=g_p.x, edge_index=g_p.edge_index, edge_attr=g_p.edge_attr, batch=g_p.batch)
         complex = self.heterognn(g_pl.x_dict, g_pl.edge_index_dict, g_pl.edge_attr_dict, g_pl.batch_dict)
-        p_seq = self.protein_seq_mpl(pro_seq)
+        p_seq = self.protein_seq_mlp(pro_seq)
+        l_seq = self.ligand_seq_mlp(ligand_seq)
 
-        emb = torch.cat((l, p, complex, p_seq), dim=1)
-        # emb = torch.cat((l, p, complex), dim=1)
-        # emb = torch.cat((l, p, p_seq), dim=1)
-        # emb = torch.cat((l, p), dim=1)
-
-        y_hat = self.out(emb)
+        emb = torch.cat((l, p, complex, p_seq, l_seq), dim=1)
+        y_hat = self.out_mlp(emb)
         return torch.squeeze(y_hat)
 
 
@@ -128,7 +128,7 @@ class PLBA_Dataset(Dataset):
 
     def __getitem__(self, index):
         G = self.G_list[index]
-        return G[0], G[1], G[2], G[3]
+        return G[0], G[1], G[2], G[3], G[5]
 
     def __len__(self):
         return self.len
