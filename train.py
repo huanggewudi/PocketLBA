@@ -1,6 +1,7 @@
 import argparse
 
 import torch
+import torch.nn as nn
 import warnings
 from sklearn import metrics
 
@@ -87,7 +88,7 @@ class HeteroGNN(torch.nn.Module):
 class BIPLnet(torch.nn.Module):
     def __init__(self, metadata):
         super().__init__()
-        self.heterognn = HeteroGNN(metadata, edge_dim=10, hidden_channels=64, out_channels=8, num_layers=3)
+        # self.heterognn = HeteroGNN(metadata, edge_dim=10, hidden_channels=64, out_channels=8, num_layers=3)
         self.ligandgnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=16, edge_dim=12, num_timesteps=3,
                                      num_layers=3)
         self.proteingnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=16, edge_dim=12, num_timesteps=3,
@@ -95,22 +96,37 @@ class BIPLnet(torch.nn.Module):
         self.protein_seq_mlp = MLP(channel_list=[1024, 512, 16], dropout=0.1)
         # todo 确定输入维度
         self.ligand_seq_mlp = MLP(channel_list=[1024, 512, 16], dropout=0.1)
-        self.out_mlp = MLP(channel_list=[None, 64, 32, 1], dropout=0.1)
+        self.attention = nn.MultiheadAttention(embed_dim=16, num_heads=4)
+        self.out_mlp = MLP(channel_list=[64, 32, 1], dropout=0.1)
 
     def forward(self, data):
         g_l = data[0]
         g_p = data[1]
-        g_pl = data[2]
+        # g_pl = data[2]
         pro_seq = data[3]
         ligand_seq = data[4]
 
         l = self.ligandgnn(x=g_l.x, edge_index=g_l.edge_index, edge_attr=g_l.edge_attr, batch=g_l.batch)
         p = self.proteingnn(x=g_p.x, edge_index=g_p.edge_index, edge_attr=g_p.edge_attr, batch=g_p.batch)
-        complex = self.heterognn(g_pl.x_dict, g_pl.edge_index_dict, g_pl.edge_attr_dict, g_pl.batch_dict)
+        # complex = self.heterognn(g_pl.x_dict, g_pl.edge_index_dict, g_pl.edge_attr_dict, g_pl.batch_dict)
         p_seq = self.protein_seq_mlp(pro_seq)
         l_seq = self.ligand_seq_mlp(ligand_seq)
 
-        emb = torch.cat((l, p, complex, p_seq, l_seq), dim=1)
+        # 将四个向量拼接在一起，形状为 (batch_size, 4, 16)
+        x = torch.stack([p, l, p_seq, l_seq], dim=1)
+
+        # 需要转置为 (4, batch_size, 16)
+        x = x.transpose(0, 1)
+
+        # 注意力层的输出会是 (4, batch_size, 16)
+        attn_output, _ = self.attention(x, x, x)
+
+        # 将输出转回 (batch_size, 4, 16)
+        attn_output = attn_output.transpose(0, 1)
+
+        # 将四个 16 维的向量拼接成 (batch_size, 64)
+        emb = attn_output.flatten(start_dim=1)
+
         y_hat = self.out_mlp(emb)
         return torch.squeeze(y_hat)
 
@@ -197,7 +213,7 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
     loss_list = []
     best_mae = float('inf')
     best_rmse = float('inf')
-    for epoch in range(50):
+    for epoch in range(100):
         loss_epoch = 0
         n = 0
         for data in train_loader:
@@ -290,9 +306,9 @@ if __name__ == '__main__':
     split = args.split
 
     print("loading data")
-    train_set = PLBA_Dataset('file', f'../data_prottrans/{split}/train.pkl')
-    val_set = PLBA_Dataset('file', f'../data_prottrans/{split}/valid.pkl')
-    test_set = PLBA_Dataset('file', f'../data_prottrans/{split}/test.pkl')
+    train_set = PLBA_Dataset('file', f'../data/{split}/train.pkl')
+    val_set = PLBA_Dataset('file', f'../data/{split}/valid.pkl')
+    test_set = PLBA_Dataset('file', f'../data/{split}/test.pkl')
 
     train_loader = DataLoader(dataset=train_set, batch_size=128, shuffle=True, pin_memory=True)
     val_loader = DataLoader(dataset=val_set, batch_size=128, shuffle=True, pin_memory=True)
