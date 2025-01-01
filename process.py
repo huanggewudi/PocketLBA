@@ -135,7 +135,7 @@ def read_protein(filepath, prot_lm):
 
     seq = ''
     # protein_filepath = filepath
-    protein_filepath = filepath.replace('pocket', '')
+    protein_filepath = filepath.replace('_pocket', '')
     for line in open(protein_filepath):
         if line[0:6] == "SEQRES":
             columns = line.split()
@@ -156,9 +156,9 @@ def mult_graph(lig_file_name, pocket_file_name, id, score, prot_lm, ligand_lm):
     pocket_coord, pocket_atom_fea, protein, h_num_pro, pro_seq_emb = read_protein(pocket_file_name, prot_lm)  # ,pro_seq
 
     if (mol is not None) and (protein is not None):
-        G_l = Ligand_graph(lig_atom_fea, mol, h_num_lig, score)
+        G_l = ligand_graph(lig_atom_fea, mol, h_num_lig, score)
         G_p = protein_graph(pocket_atom_fea, protein, h_num_pro, score)
-        G_inter = Inter_graph(lig_coord, pocket_coord, lig_atom_fea, pocket_atom_fea, score)
+        G_inter = inter_graph(lig_coord, pocket_coord, lig_atom_fea, pocket_atom_fea, score)
         G_list = [G_l, G_p, G_inter, pro_seq_emb, id, ligand_seq_emb]
         return G_list
     else:
@@ -244,7 +244,7 @@ def atomlist_to_tensor(atom_list):
     return atom_tensor
 
 
-def Ligand_graph(lig_atoms_fea, ligand, h_num, score):
+def ligand_graph(lig_atoms_fea, ligand, h_num, score):
     edges = []
     edges_fea = []
     for bond in openbabel.OBMolBondIter(ligand.OBMol):
@@ -302,7 +302,7 @@ def protein_graph(pocket_atom_fea, protein, h_num, score):
     return G_pocket
 
 
-def Inter_graph(lig_coord, pocket_coord, lig_atom_fea, pocket_atom_fea, score, cut=5):
+def inter_graph(lig_coord, pocket_coord, lig_atom_fea, pocket_atom_fea, score, cut=5):
     coord_list = []
     for atom in lig_coord:
         coord_list.append(atom)
