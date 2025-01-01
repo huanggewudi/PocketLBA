@@ -360,12 +360,13 @@ def GetPDBDict(Path):
 
 
 def process_raw_data(dataset_path, processed_file, set_list):
-    res = GetPDBDict(Path='/mnt/disk/hzy/pyg/datasets/raw/pdbbind/metadata/index/INDEX_general_PL_data.2019')
+    res = GetPDBDict(Path='./Dataset/Raw/pdbbind/metadata/index/INDEX_general_PL_data.2019')
 
     G_list = []
 
-    tokenizer = AutoTokenizer.from_pretrained("/mnt/disk/hzy/pyg/plms/esm2_3b", do_lower_case=False)
-    model = AutoModel.from_pretrained("/mnt/disk/hzy/pyg/plms/esm2_3b")
+    # todo
+    tokenizer = AutoTokenizer.from_pretrained("/mnt/disk/hzy/pyg/plms/esm2_t36_3B_UR50D", do_lower_case=False)
+    model = AutoModel.from_pretrained("/mnt/disk/hzy/pyg/plms/esm2_t36_3B_UR50D")
     prot_lm = pipeline('feature-extraction', model=model, tokenizer=tokenizer, device=0)
 
     ligand_tokenizer = AutoTokenizer.from_pretrained("/mnt/disk/hzy/pyg/plms/ChemBERTa-77M-MLM")
@@ -417,11 +418,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     split = args.split
 
+    # todo
     raw_data_path = '/mnt/disk/hzy/pyg/datasets/raw/pdbbind/pdb_files/'
 
-    data_path_train = f'../data/{split}/train.pkl'
-    data_path_valid = f'../data/{split}/valid.pkl'
-    data_path_test = f'../data/{split}/test.pkl'
+    data_path_train = f'./Dataset/Processed/{split}/train.pkl'
+    data_path_valid = f'./Dataset/Processed/{split}/valid.pkl'
+    data_path_test = f'./Dataset/Processed/{split}/test.pkl'
 
     # 如果目录不存在，则创建目录
     data_dir = os.path.dirname(data_path_train)
@@ -429,7 +431,7 @@ if __name__ == '__main__':
         os.makedirs(data_dir)
 
     # 读取 JSON 文件
-    json_file_path = f"/mnt/disk/hzy/pyg/datasets/raw/pdbbind/metadata/{split}_split.json"
+    json_file_path = f"./Dataset/Raw/pdbbind/metadata/{split}_split.json"
     json_data = read_json(json_file_path)
 
     train_list = json_data['train']

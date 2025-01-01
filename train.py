@@ -251,11 +251,7 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
             best_rmse = val_rmse
             affinity_err = my_test(test_set, metadata, kf_filepath + 'best_model.pt')
 
-            test_mae = affinity_err[0]
-            test_rmse = affinity_err[1]
-            test_pearson = affinity_err[2]
-            test_spearman = affinity_err[3]
-            test_r2 = affinity_err[4]
+            test_mae, test_rmse, test_pearson, test_spearman, test_r2 = affinity_err
 
             f_log = open(file=(kf_filepath + "/log.txt"), mode="a")
 
@@ -285,7 +281,7 @@ def my_test(test_set, metadata, model_file):
     best_model = BIPLnet(metadata=metadata).to(device)
     best_model.load_state_dict(m_state_dict)
     best_model.eval()
-    test_loder = DataLoader(dataset=test_set, batch_size=128, shuffle=True, num_workers=0)
+    test_loder = DataLoader(dataset=test_set, batch_size=128, shuffle=False, num_workers=0)
 
     for i, data in enumerate(test_loder, 0):
         with torch.no_grad():
@@ -316,9 +312,9 @@ if __name__ == '__main__':
     split = args.split
 
     print("loading data")
-    train_set = PLBA_Dataset('file', f'../data/{split}/train.pkl')
-    val_set = PLBA_Dataset('file', f'../data/{split}/valid.pkl')
-    test_set = PLBA_Dataset('file', f'../data/{split}/test.pkl')
+    train_set = PLBA_Dataset('file', f'./Dataset/Processed/{split}/train.pkl')
+    val_set = PLBA_Dataset('file', f'./Dataset/Processed/{split}/valid.pkl')
+    test_set = PLBA_Dataset('file', f'./Dataset/Processed/{split}/test.pkl')
 
     train_loader = DataLoader(dataset=train_set, batch_size=128, shuffle=True, pin_memory=True)
     val_loader = DataLoader(dataset=val_set, batch_size=128, shuffle=True, pin_memory=True)
