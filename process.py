@@ -156,12 +156,11 @@ def mult_graph(lig_file_name, pocket_file_name, id, score, prot_lm, ligand_lm):
     pocket_coord, pocket_atom_fea, protein, h_num_pro, pro_seq_emb = read_protein(pocket_file_name, prot_lm)  # ,pro_seq
 
     if (mol is not None) and (protein is not None):
-        print("Both not None.")
+        # print("Both not None.")
         G_l = ligand_graph(lig_atom_fea, mol, h_num_lig, score)
         G_p = protein_graph(pocket_atom_fea, protein, h_num_pro, score)
         G_inter = inter_graph(lig_coord, pocket_coord, lig_atom_fea, pocket_atom_fea, score)
         G_list = [G_l, G_p, G_inter, pro_seq_emb, id, ligand_seq_emb]
-        print(G_list)
         return G_list
     else:
         if mol is None and protein is None:
@@ -389,6 +388,7 @@ def process_raw_data(dataset_path, processed_file, set_list):
         try:
             G = mult_graph(lig_file_name, pocket_file_name, item, score, prot_lm, ligand_lm)
             if G is not None:
+                print("Graph not None.")
                 G_list.append(G)
         except Exception as e:
             print(f"发生错误: {e}")  # 打印错误信息
