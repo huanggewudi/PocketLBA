@@ -162,6 +162,12 @@ def mult_graph(lig_file_name, pocket_file_name, id, score, prot_lm, ligand_lm):
         G_list = [G_l, G_p, G_inter, pro_seq_emb, id, ligand_seq_emb]
         return G_list
     else:
+        if mol is None and protein is None:
+            print("Both 'mol' and 'protein' are None.")
+        elif mol is None:
+            print("'mol' is None.")
+        elif protein is None:
+            print("'protein' is None.")
         return None
 
 
