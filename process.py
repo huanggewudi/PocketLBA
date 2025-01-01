@@ -115,6 +115,7 @@ def read_ligand(filepath, ligand_lm):
 
     embedding = ligand_lm(smiles)
     ligand_seq_emb = torch.tensor(embedding[0])
+    ligand_seq_emb = torch.mean(ligand_seq_emb, dim=0)
 
     return ligand_coord, atom_fea, ligand, h_num, ligand_seq_emb
 
@@ -145,7 +146,7 @@ def read_protein(filepath, prot_lm):
 
     embedding = prot_lm(sequences_Example)
     pro_seq_emb = torch.tensor(embedding[0])
-    # pro_seq_emb = torch.mean(e1, dim=0)
+    pro_seq_emb = torch.mean(pro_seq_emb, dim=0)
 
     return pocket_coord, atom_fea, protein_pocket, h_num, pro_seq_emb
 
@@ -367,9 +368,8 @@ def process_raw_data(dataset_path, processed_file, set_list):
     model = AutoModel.from_pretrained("/mnt/disk/hzy/pyg/plms/esm2_3b")
     prot_lm = pipeline('feature-extraction', model=model, tokenizer=tokenizer, device=0)
 
-    # todo 添加小分子语言模型
-    ligand_tokenizer = AutoTokenizer.from_pretrained("", do_lower_case=False)
-    ligand_model = AutoModel.from_pretrained("")
+    ligand_tokenizer = AutoTokenizer.from_pretrained("/mnt/disk/hzy/pyg/plms/ChemBERTa-77M-MLM")
+    ligand_model = AutoModel.from_pretrained("/mnt/disk/hzy/pyg/plms/ChemBERTa-77M-MLM")
     ligand_lm = pipeline('feature-extraction', model=ligand_model, tokenizer=ligand_tokenizer, device=0)
 
     for item in tqdm(set_list):
