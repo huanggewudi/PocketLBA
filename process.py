@@ -389,6 +389,7 @@ def process_raw_data(dataset_path, processed_file, set_list):
             if G is not None:
                 G_list.append(G)
         except Exception as e:
+            print(f"发生错误: {e}")  # 打印错误信息
             continue  # 继续下一个循环
 
     print('sample num: ', len(G_list))
