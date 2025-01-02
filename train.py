@@ -257,8 +257,8 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
             with open(kf_filepath + "/log.txt", mode="a") as f_log:
                 str_log = (
                     f"Epoch: {epoch:<5} | "
-                    f"Test MAE: {test_mae:.3f} | "
                     f"Test RMSE: {test_rmse:.3f} | "
+                    f"Test MAE: {test_mae:.3f} | "
                     f"Test Pearson: {test_pearson:.3f} | "
                     f"Test Spearman: {test_spearman:.3f} | "
                     f"Test R²: {test_r2:.3f}\n"
