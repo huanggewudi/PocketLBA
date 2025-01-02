@@ -88,7 +88,7 @@ class HeteroGNN(torch.nn.Module):
 class BIPLnet(torch.nn.Module):
     def __init__(self, metadata):
         super().__init__()
-        self.printed_shapes = True
+        # self.printed_shapes = True
         # self.heterognn = HeteroGNN(metadata, edge_dim=10, hidden_channels=64, out_channels=8, num_layers=3)
         self.ligandgnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=16, edge_dim=12, num_timesteps=3,
                                      num_layers=3)
@@ -112,15 +112,15 @@ class BIPLnet(torch.nn.Module):
         p_seq = self.protein_seq_mlp(pro_seq)
         l_seq = self.ligand_seq_mlp(ligand_seq)
 
-        # 打印一次张量的维度
-        if self.printed_shapes:
-            print(
-                f"Ligand tensor shape: {l.shape}, "
-                f"Protein tensor shape: {p.shape}, "
-                f"Protein sequence tensor shape: {p_seq.shape}, "
-                f"Ligand sequence tensor shape: {l_seq.shape}"
-            )
-            self.printed_shapes = False
+        # # 打印一次张量的维度
+        # if self.printed_shapes:
+        #     print(
+        #         f"Ligand tensor shape: {l.shape}, "
+        #         f"Protein tensor shape: {p.shape}, "
+        #         f"Protein sequence tensor shape: {p_seq.shape}, "
+        #         f"Ligand sequence tensor shape: {l_seq.shape}"
+        #     )
+        #     self.printed_shapes = False
 
         # 将四个向量拼接在一起，形状为 (batch_size, 4, 16)
         x = torch.stack([p, l, p_seq, l_seq], dim=1)
@@ -254,7 +254,7 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
             print(
                 f"Epoch : {epoch}, Test RMSE: {test_rmse:.3f}, MAE: {test_mae:.3f}, Pearson: {test_pearson:.3f}, Spearman: {test_spearman:.3f}, R²: {test_r2:.3f}")
 
-            with open(kf_filepath + "/log.txt", mode="a") as f_log:
+            with open(kf_filepath + "/log.txt", mode="w") as f_log:
                 str_log = (
                     f"Epoch: {epoch:<5} | "
                     f"Test MAE: {test_mae:.3f} | "
