@@ -233,38 +233,37 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
 
             loss = F.mse_loss(out, data[0].y)
             loss_epoch += loss.item()
-            print('epoch:', epoch, ' i', n, ' loss:', loss.item())
             loss.backward()
             optimizer.step()
             n += 1
         loss_list.append(loss_epoch / n)
-        print('epoch:', epoch, ' loss:', loss_epoch / n)
+        print(f"epoch : {epoch}, loss: {loss_epoch / n:.3f}")
 
         val_err = my_val(model, val_loader, device)
         val_mae = val_err[0]
         val_rmse = val_err[1]
         if val_rmse < best_rmse and val_mae < best_mae:
-            print('********save model*********')
-            print('epoch:', epoch, 'mae:', val_mae, 'rmse:', val_rmse)
+            print('******************Save Model********************')
+            print(f"Epoch : {epoch}, Val RMSE: {val_rmse:.3f}, MAE: {val_mae:.3f}")
             torch.save(model.state_dict(), kf_filepath + 'best_model.pt')
             best_mae = val_mae
             best_rmse = val_rmse
             affinity_err = my_test(test_set, metadata, kf_filepath + 'best_model.pt')
 
             test_mae, test_rmse, test_pearson, test_spearman, test_r2 = affinity_err
+            print(
+                f"Epoch : {epoch}, Test RMSE: {test_rmse:.3f}, MAE: {test_mae:.3f}, Pearson: {test_pearson:.3f}, Spearman: {test_spearman:.3f}, R²: {test_r2:.3f}")
 
-            f_log = open(file=(kf_filepath + "/log.txt"), mode="a")
-
-            str_log = (
-                f"Epoch: {epoch:<5} | "
-                f"Test MAE: {test_mae:.3f} | "
-                f"Test RMSE: {test_rmse:.3f} | "
-                f"Test Pearson: {test_pearson:.3f} | "
-                f"Test Spearman: {test_spearman:.3f} | "
-                f"Test R²: {test_r2:.3f}\n"
-            )
-            f_log.write(str_log)
-            f_log.close()
+            with open(kf_filepath + "/log.txt", mode="a") as f_log:
+                str_log = (
+                    f"Epoch: {epoch:<5} | "
+                    f"Test MAE: {test_mae:.3f} | "
+                    f"Test RMSE: {test_rmse:.3f} | "
+                    f"Test Pearson: {test_pearson:.3f} | "
+                    f"Test Spearman: {test_spearman:.3f} | "
+                    f"Test R²: {test_r2:.3f}\n"
+                )
+                f_log.write(str_log)
 
     plt.plot(loss_list)
     plt.ylabel('Loss')
