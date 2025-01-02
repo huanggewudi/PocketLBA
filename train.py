@@ -237,14 +237,14 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
             optimizer.step()
             n += 1
         loss_list.append(loss_epoch / n)
-        print(f"epoch : {epoch}, loss: {loss_epoch / n:.3f}")
+        print(f"Epoch : {epoch}, loss: {loss_epoch / n:.3f}")
 
         val_err = my_val(model, val_loader, device)
         val_mae = val_err[0]
         val_rmse = val_err[1]
         if val_rmse < best_rmse and val_mae < best_mae:
-            print('******************Save Model********************')
-            print(f"Epoch : {epoch}, Val RMSE: {val_rmse:.3f}, MAE: {val_mae:.3f}")
+            print('            ******************Save Model********************')
+            print(f"             Epoch : {epoch}, Val RMSE: {val_rmse:.3f}, MAE: {val_mae:.3f}")
             torch.save(model.state_dict(), kf_filepath + 'best_model.pt')
             best_mae = val_mae
             best_rmse = val_rmse
@@ -252,7 +252,7 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
 
             test_mae, test_rmse, test_pearson, test_spearman, test_r2 = affinity_err
             print(
-                f"Epoch : {epoch}, Test RMSE: {test_rmse:.3f}, MAE: {test_mae:.3f}, Pearson: {test_pearson:.3f}, Spearman: {test_spearman:.3f}, R²: {test_r2:.3f}")
+                f"             Epoch : {epoch}, Test RMSE: {test_rmse:.3f}, MAE: {test_mae:.3f}, Pearson: {test_pearson:.3f}, Spearman: {test_spearman:.3f}, R²: {test_r2:.3f}")
 
             with open(kf_filepath + "/log.txt", mode="w") as f_log:
                 str_log = (
