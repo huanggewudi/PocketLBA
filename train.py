@@ -254,7 +254,7 @@ def my_train(train_loader, val_loader, test_set, metadata, kf_filepath):
             print(
                 f"             Epoch : {epoch}, Test RMSE: {test_rmse:.3f}, MAE: {test_mae:.3f}, Pearson: {test_pearson:.3f}, Spearman: {test_spearman:.3f}, R²: {test_r2:.3f}")
 
-            with open(kf_filepath + "/log.txt", mode="w") as f_log:
+            with open(kf_filepath + "/log.txt", mode="a") as f_log:
                 str_log = (
                     f"Epoch: {epoch:<5} | "
                     f"Test MAE: {test_mae:.3f} | "
