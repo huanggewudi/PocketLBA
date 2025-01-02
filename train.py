@@ -94,7 +94,7 @@ class BIPLnet(torch.nn.Module):
                                      num_layers=3)
         self.proteingnn = AttentiveFP(in_channels=18, hidden_channels=64, out_channels=16, edge_dim=12, num_timesteps=3,
                                       num_layers=3)
-        self.protein_seq_mlp = MLP(channel_list=[1024, 512, 16], dropout=0.1)
+        self.protein_seq_mlp = MLP(channel_list=[2560, 1280, 640, 16], dropout=0.1)
         self.ligand_seq_mlp = MLP(channel_list=[384, 192, 16], dropout=0.1)
         self.attention = nn.MultiheadAttention(embed_dim=16, num_heads=4)
         self.out_mlp = MLP(channel_list=[64, 32, 1], dropout=0.1)
