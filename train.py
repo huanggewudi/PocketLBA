@@ -114,7 +114,8 @@ class BIPLnet(torch.nn.Module):
 
         # 将四个向量拼接在一起，形状为 (batch_size, 4, 16)
         # x = torch.stack([p, l, p_seq, l_seq], dim=1)
-        x = torch.stack([p, l, l_seq], dim=1)
+        # x = torch.stack([p, l, l_seq], dim=1)
+        x = torch.stack([l, p_seq, l_seq], dim=1)
 
         # 需要转置为 (4, batch_size, 16)
         x = x.transpose(0, 1)
