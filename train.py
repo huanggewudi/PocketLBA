@@ -116,7 +116,8 @@ class BIPLnet(torch.nn.Module):
         # x = torch.stack([p, l, p_seq, l_seq], dim=1)
         # x = torch.stack([p, l, l_seq], dim=1)
         # x = torch.stack([l, p_seq, l_seq], dim=1)
-        x = torch.stack([p, l, p_seq], dim=1)
+        # x = torch.stack([p, l, p_seq], dim=1)
+        x = torch.stack([p, p_seq, l_seq], dim=1)
 
         # 需要转置为 (4, batch_size, 16)
         x = x.transpose(0, 1)
