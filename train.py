@@ -97,7 +97,7 @@ class BIPLnet(torch.nn.Module):
         self.protein_seq_mlp = MLP(channel_list=[2560, 1280, 640, 16], dropout=0.1)
         self.ligand_seq_mlp = MLP(channel_list=[384, 192, 16], dropout=0.1)
         self.attention = nn.MultiheadAttention(embed_dim=16, num_heads=4)
-        self.out_mlp = MLP(channel_list=[64, 32, 1], dropout=0.1)
+        self.out_mlp = MLP(channel_list=[48, 32, 1], dropout=0.1)
 
     def forward(self, data):
         g_l = data[0]
@@ -112,18 +112,9 @@ class BIPLnet(torch.nn.Module):
         p_seq = self.protein_seq_mlp(pro_seq)
         l_seq = self.ligand_seq_mlp(ligand_seq)
 
-        # # 打印一次张量的维度
-        # if self.printed_shapes:
-        #     print(
-        #         f"Ligand tensor shape: {l.shape}, "
-        #         f"Protein tensor shape: {p.shape}, "
-        #         f"Protein sequence tensor shape: {p_seq.shape}, "
-        #         f"Ligand sequence tensor shape: {l_seq.shape}"
-        #     )
-        #     self.printed_shapes = False
-
         # 将四个向量拼接在一起，形状为 (batch_size, 4, 16)
-        x = torch.stack([p, l, p_seq, l_seq], dim=1)
+        # x = torch.stack([p, l, p_seq, l_seq], dim=1)
+        x = torch.stack([p, l, l_seq], dim=1)
 
         # 需要转置为 (4, batch_size, 16)
         x = x.transpose(0, 1)
