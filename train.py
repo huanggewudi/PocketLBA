@@ -97,7 +97,7 @@ class BIPLnet(torch.nn.Module):
         self.protein_seq_mlp = MLP(channel_list=[2560, 1280, 640, 16], dropout=0.1)
         self.ligand_seq_mlp = MLP(channel_list=[384, 192, 16], dropout=0.1)
         self.attention = nn.MultiheadAttention(embed_dim=16, num_heads=4)
-        self.out_mlp = MLP(channel_list=[48, 32, 1], dropout=0.1)
+        self.out_mlp = MLP(channel_list=[64, 32, 1], dropout=0.1)
 
     def forward(self, data):
         g_l = data[0]
@@ -113,23 +113,24 @@ class BIPLnet(torch.nn.Module):
         l_seq = self.ligand_seq_mlp(ligand_seq)
 
         # 将四个向量拼接在一起，形状为 (batch_size, 4, 16)
-        # x = torch.stack([p, l, p_seq, l_seq], dim=1)
+        x = torch.stack([p, l, p_seq, l_seq], dim=1)
         # x = torch.stack([p, l, l_seq], dim=1)
         # x = torch.stack([l, p_seq, l_seq], dim=1)
         # x = torch.stack([p, l, p_seq], dim=1)
-        x = torch.stack([p, p_seq, l_seq], dim=1)
+        # x = torch.stack([p, p_seq, l_seq], dim=1)
 
-        # 需要转置为 (4, batch_size, 16)
-        x = x.transpose(0, 1)
-
-        # 注意力层的输出会是 (4, batch_size, 16)
-        attn_output, _ = self.attention(x, x, x)
-
-        # 将输出转回 (batch_size, 4, 16)
-        attn_output = attn_output.transpose(0, 1)
+        # # 需要转置为 (4, batch_size, 16)
+        # x = x.transpose(0, 1)
+        #
+        # # 注意力层的输出会是 (4, batch_size, 16)
+        # attn_output, _ = self.attention(x, x, x)
+        #
+        # # 将输出转回 (batch_size, 4, 16)
+        # attn_output = attn_output.transpose(0, 1)
 
         # 将四个 16 维的向量拼接成 (batch_size, 64)
-        emb = attn_output.flatten(start_dim=1)
+        emb = x.flatten(start_dim=1)
+        # emb = attn_output.flatten(start_dim=1)
 
         y_hat = self.out_mlp(emb)
         return torch.squeeze(y_hat)
