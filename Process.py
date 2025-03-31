@@ -13,7 +13,7 @@ from torch_geometric.utils import contains_isolated_nodes, tree_decomposition
 from scipy.spatial import distance_matrix
 import torch_geometric.transforms as T
 import pickle
-from Openbabel_Featurizer import Featurizer, CusBondFeaturizer
+from Feature_extraction import Featurizer, CusBondFeaturizer
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModel, pipeline
 import re
