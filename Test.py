@@ -1,3 +1,5 @@
+import argparse
+
 import pandas as pd
 import torch
 import warnings
@@ -80,14 +82,24 @@ def my_test(test_set, metadata, model_file):
 if __name__ == '__main__':
     """ Please use the Process.py file to preprocess the raw data and set up the training, validation, and test sets """
 
-    split = 'identity30'
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description="Process PDBbind data and set split parameter.")
+    parser.add_argument(
+        '--split',
+        type=str,
+        default='identity30',
+        help="Specify the split type (e.g., identity30, identity60, scaffold.). Default is 'identity30'."
+    )
+
+    # Parse arguments
+    args = parser.parse_args()
+    split = args.split
+
     print("loading test data")
     test_set = PLBA_Dataset_new('file', f'./Dataset/Processed/test.pkl')
 
     metadata = test_set[0][2].metadata()
 
     filepath = f'./output/{split}/'
-    if not os.path.exists(filepath):
-        os.makedirs(filepath)
 
     my_test(test_set, metadata, filepath + 'best_model.pt')
