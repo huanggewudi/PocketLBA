@@ -16,7 +16,7 @@ The file and folders in the PocketLBA repository:
 
 - **LLMs**: Protein language model ESM-2 and small molecule language model ChemBERTa.
 
-- **Feature_extraction.py:** Extract features for proteins and ligands.
+- **Feature_extraction.py:** Extract features for protein and ligand.
 
 - **Process.py**: Preprocess protein and ligand data, generating graph files.
 

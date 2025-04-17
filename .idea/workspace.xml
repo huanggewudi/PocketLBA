@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bc02b314-6b37-494f-97e6-014e9389fec2" name="变更" comment="修改">
+    <list default="true" id="bc02b314-6b37-494f-97e6-014e9389fec2" name="变更" comment="new">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/process.py" beforeDir="false" afterPath="$PROJECT_DIR$/process.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,9 +34,15 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;TODO_SCOPE&quot;: &quot;所有位置&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\Desktop\Pocket\PocketLBA\Scripts" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
@@ -124,7 +129,133 @@
       <option name="project" value="LOCAL" />
       <updated>1735753507828</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="修改">
+      <created>1735753838656</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1735753838656</updated>
+    </task>
+    <task id="LOCAL-00013" summary="修改">
+      <created>1735754167886</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1735754167886</updated>
+    </task>
+    <task id="LOCAL-00014" summary="修改">
+      <created>1735799396193</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1735799396193</updated>
+    </task>
+    <task id="LOCAL-00015" summary="修改">
+      <created>1735800528770</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1735800528770</updated>
+    </task>
+    <task id="LOCAL-00016" summary="new">
+      <created>1735800899939</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1735800899939</updated>
+    </task>
+    <task id="LOCAL-00017" summary="new">
+      <created>1735801228057</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1735801228057</updated>
+    </task>
+    <task id="LOCAL-00018" summary="new">
+      <created>1735801799716</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1735801799716</updated>
+    </task>
+    <task id="LOCAL-00019" summary="new">
+      <created>1735802144793</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1735802144793</updated>
+    </task>
+    <task id="LOCAL-00020" summary="new">
+      <created>1737027726941</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1737027726941</updated>
+    </task>
+    <task id="LOCAL-00021" summary="new">
+      <created>1737030716679</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1737030716679</updated>
+    </task>
+    <task id="LOCAL-00022" summary="new">
+      <created>1737034349406</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1737034349406</updated>
+    </task>
+    <task id="LOCAL-00023" summary="new">
+      <created>1737036956246</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1737036956246</updated>
+    </task>
+    <task id="LOCAL-00024" summary="new">
+      <created>1737104343567</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1737104343567</updated>
+    </task>
+    <task id="LOCAL-00025" summary="new">
+      <created>1743253592487</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1743253592487</updated>
+    </task>
+    <task id="LOCAL-00026" summary="new">
+      <created>1743254693774</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1743254693774</updated>
+    </task>
+    <task id="LOCAL-00027" summary="new">
+      <created>1743401733586</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1743401733586</updated>
+    </task>
+    <task id="LOCAL-00028" summary="new">
+      <created>1744600994468</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1744600994468</updated>
+    </task>
+    <task id="LOCAL-00029" summary="new">
+      <created>1744692459254</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1744692459254</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -151,13 +282,13 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="new" />
     <MESSAGE value="修改预处理，添加大模型小分子序列表示" />
     <MESSAGE value="修改模型，增加小分子序列特征" />
     <MESSAGE value="修改模型" />
     <MESSAGE value="添加ligand语言模型" />
     <MESSAGE value="修改路径 和 test.py" />
     <MESSAGE value="修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改" />
+    <MESSAGE value="new" />
+    <option name="LAST_COMMIT_MESSAGE" value="new" />
   </component>
 </project>
